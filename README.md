@@ -1,5 +1,7 @@
 # ADQAF — Autonomous Data Quality Assurance Framework
 
+[![ADQAF Automated Tests](https://github.com/tanvirshadgit/ADQAF/actions/workflows/tests.yml/badge.svg)](https://github.com/tanvirshadgit/ADQAF/actions/workflows/tests.yml)
+
 A Python-based prototype for automated quality assurance of YOLO object-detection datasets.
 
 ADQAF demonstrates annotation validation, dataset integrity checks, automated quality gates, regression testing, and HTML reporting.
