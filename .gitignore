@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Local datasets
+datasets/
+
+# Generated audit reports
+reports/
+
+# Temporary and backup files
+*.py.save
+*_backup.py
+*.bak
+
+# Environment files
+.env
+.env.*
+README.md.backup
