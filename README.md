@@ -58,6 +58,14 @@ On macOS:
 
 The current dashboard generator uses a fixed report directory.
 
+
+## Quality Dashboard Preview
+
+The dashboard visualizes dataset quality findings,
+severity classifications, and quality-gate decisions.
+
+![ADQAF Quality Dashboard](docs/dashboard.png)
+
 ## Automated Testing
 
     python3 -m unittest discover -v
