@@ -2,11 +2,38 @@
 
 [![ADQAF Automated Tests](https://github.com/tanvirshadgit/ADQAF/actions/workflows/tests.yml/badge.svg)](https://github.com/tanvirshadgit/ADQAF/actions/workflows/tests.yml)
 
-A Python-based prototype for automated quality assurance of YOLO object-detection datasets.
+[![Release](https://img.shields.io/github/v/release/tanvirshadgit/ADQAF)](https://github.com/tanvirshadgit/ADQAF/releases/tag/v1.0.0)
 
-ADQAF demonstrates annotation validation, dataset integrity checks, automated quality gates, regression testing, and HTML reporting.
+## Portfolio Overview
 
-**Status:** Functional research and engineering prototype. Not production-certified.
+ADQAF is a Python-based research and engineering prototype
+for quality assurance of YOLO-format object detection datasets.
+
+It combines annotation validation, automated quality gates,
+golden-set evaluation, and individual annotator performance
+scorecards in a reproducible testing workflow.
+
+**Current release:** v1.0.0
+
+**Verification:** 54 passing unit tests and successful GitHub Actions CI.
+
+**Technology:** Python 3, standard library, GitHub Actions, HTML, JSON, CSV.
+
+**Project status:** Functional prototype; not production-certified.
+
+### Engineering Highlights
+
+- Automated YOLO annotation integrity checks
+- Severity-based dataset quality decisions
+- Class-aware maximum-cardinality bounding-box matching
+- Precision, Recall, F1, TP, FP and FN evaluation
+- Configurable annotator quality thresholds
+- JSON/CSV reporting and HTML dashboard
+- Automated regression testing through GitHub Actions
+
+### Official Release
+
+[ADQAF v1.0.0 — Initial Stable Release](https://github.com/tanvirshadgit/ADQAF/releases/tag/v1.0.0)
 
 ## Features
 
@@ -27,11 +54,36 @@ ADQAF demonstrates annotation validation, dataset integrity checks, automated qu
 
 ## Architecture
 
-YOLO Dataset → Validator → JSON/CSV Report → Quality Gate → HTML Dashboard
+YOLO Dataset → Validator → Validation Reports → Quality Gate → HTML Dashboard
+
+Ground-Truth Labels + Annotator Labels → Golden-Set Evaluation → Precision / Recall / F1 → Annotator Performance Scorecard → JSON Scorecard
 
 ## Requirements
 
-Python 3. No external Python packages required.
+- Python 3
+- Git
+- No external Python packages required
+
+## Installation and Quick Start
+
+Clone the repository:
+
+    git clone https://github.com/tanvirshadgit/ADQAF.git
+    cd ADQAF
+
+Run the automated test suite:
+
+    python3 -m unittest discover -v
+
+Run dataset validation (replace the example path with your local YOLO dataset):
+
+    python3 validator.py --dataset datasets/my_dataset --classes 80 --output reports/my_audit
+
+Generate a quality-gate decision:
+
+    python3 quality_gate.py --report reports/my_audit/quality_report.json --output reports/my_audit/quality_gate.json
+
+The example dataset is not included in the repository. Provide your own dataset using the structure below.
 
 ## Dataset Structure
 
@@ -88,7 +140,7 @@ severity classifications, and quality-gate decisions.
 
     python3 -m unittest discover -v
 
-Latest verified result: 17 unit tests passed locally and in GitHub Actions CI.
+Latest verified result: 54 unit tests passed locally, with successful GitHub Actions CI for commit 1de969d (v1.0.0).
 
 ## COCO128 Audit Results
 
@@ -123,7 +175,6 @@ Warnings: 2. Errors: 2.
 
 ## Roadmap
 
-- Golden-set evaluation
 - IoU-based duplicate detection
 - Risk-based QA sampling
 - Image integrity checks
@@ -195,6 +246,28 @@ Example (allow negative samples):
     python3 validator.py --dataset datasets/coco128 --classes 80 --output reports/negative_samples --missing-label-policy allow
 
 Use `allow` only when the dataset annotation policy permits missing label files. Empty label files are still reported.
+
+
+## Verified Scorecard Demo Results
+
+The local two-file golden-set demonstration produced:
+
+| Metric | Result |
+|---|---:|
+| Files evaluated | 2 |
+| True Positives (TP) | 1 |
+| False Positives (FP) | 1 |
+| False Negatives (FN) | 1 |
+| Precision | 0.5000 |
+| Recall | 0.5000 |
+| F1 Score | 0.5000 |
+| Quality Status | FAIL |
+
+The FAIL status is the expected quality-gate classification for this demonstration, not a software test failure.
+
+These results demonstrate metric calculation and threshold-based classification. They are not a benchmark of ADQAF accuracy or production performance.
+
+The demo dataset is local and is not included in the public repository.
 
 ## Annotator Performance Scorecard
 
