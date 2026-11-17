@@ -7,7 +7,7 @@ from pathlib import Path
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.bmp', '.webp'}
 
 
-def validate_dataset(root: Path, class_count: int):
+def validate_dataset(root: Path, class_count: int, missing_label_policy: str = 'warn'):
     images_dir, labels_dir = root / 'images', root / 'labels'
     if not images_dir.is_dir() or not labels_dir.is_dir():
         raise ValueError('Dataset must contain images/ and labels/ directories')
@@ -21,7 +21,8 @@ def validate_dataset(root: Path, class_count: int):
         relative = image.relative_to(images_dir).with_suffix('.txt')
         label = labels_dir / relative
         if not label.exists():
-            issues.append(dict(image=str(image.relative_to(root)), line='', code='MISSING_LABEL', detail='No annotation file; may be an intentional negative sample'))
+            if missing_label_policy == 'warn':
+                issues.append(dict(image=str(image.relative_to(root)), line='', code='MISSING_LABEL', detail='No annotation file; may be an intentional negative sample'))
             continue
         lines = label.read_text(encoding='utf-8-sig').splitlines()
         if not any(line.strip() for line in lines):
@@ -66,8 +67,18 @@ def main():
     parser.add_argument('--dataset', type=Path, required=True)
     parser.add_argument('--classes', type=int, required=True)
     parser.add_argument('--output', type=Path, default=Path('reports'))
+    parser.add_argument(
+        '--missing-label-policy',
+        choices=['warn', 'allow'],
+        default='warn',
+        help='How to handle images without annotation files'
+    )
     args = parser.parse_args()
-    report = validate_dataset(args.dataset, args.classes)
+    report = validate_dataset(
+        args.dataset,
+        args.classes,
+        missing_label_policy=args.missing_label_policy
+    )
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / 'quality_report.json').write_text(json.dumps(report, indent=2), encoding='utf-8')
     with (args.output / 'issues.csv').open('w', newline='', encoding='utf-8') as file:
