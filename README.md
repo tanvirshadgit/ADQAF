@@ -317,3 +317,5 @@ The demo annotation files are included in the repository under examples/golden_s
 - Ground-truth correctness is assumed.
 - Files evaluated counts annotation files, not verified images.
 - Thresholds should be calibrated to project requirements.
+
+**Engineering Case Study:** [Read the full case study](CASE_STUDY.md)
