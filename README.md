@@ -54,9 +54,20 @@ scorecards in a reproducible testing workflow.
 
 ## Architecture
 
-YOLO Dataset → Validator → Validation Reports → Quality Gate → HTML Dashboard
+```mermaid
+flowchart TD
+    A[YOLO Dataset] --> B[Dataset Validator]
+    B --> C[Validation Reports]
+    C --> D[Quality Gate]
+    D --> E[HTML Dashboard]
+    F[Ground Truth] --> H[Golden-Set Evaluation]
+    G[Annotator Labels] --> H
+    H --> I[Precision, Recall and F1]
+    I --> J[Annotator Scorecard]
+    J --> K[JSON Report]
+```
 
-Ground-Truth Labels + Annotator Labels → Golden-Set Evaluation → Precision / Recall / F1 → Annotator Performance Scorecard → JSON Scorecard
+The dataset validation and annotator evaluation workflows are separate but complementary.
 
 ## Requirements
 
