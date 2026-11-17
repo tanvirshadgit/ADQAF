@@ -131,6 +131,42 @@ Warnings: 2. Errors: 2.
 - Expand CI coverage with integration tests and automated dataset audits
 - Camera–LiDAR synchronization validation
 
+
+## Golden-Set Evaluation
+
+ADQAF compares YOLO annotations against verified ground-truth labels.
+
+### Features
+
+- Bounding-box IoU calculation
+- Class-aware, greedy one-to-one matching
+- TP, FP, FN, Precision, Recall and F1 Score
+- Dataset-level evaluation
+- Missing ground-truth safety checks
+- JSON reports and CLI support
+
+### Dataset Structure
+
+    golden_dataset/
+      ground_truth/
+        image001.txt
+        image002.txt
+      annotator/
+        image001.txt
+        image002.txt
+
+### Run Evaluation
+
+    python3 golden_set_cli.py --ground-truth datasets/golden_set_demo/ground_truth --annotations datasets/golden_set_demo/annotator --iou 0.5 --output reports/golden_set/evaluation.json
+
+### Limitations
+
+- Greedy matching does not guarantee globally optimal matching
+- Ground-truth correctness is not independently verified
+- Image inventory completeness is not checked
+- Missing annotator files are treated as empty annotations
+- Missing ground-truth files corresponding to annotator files cause an error
+
 ## Related Research
 
 Impact of Bounding Box Annotation Noise on Object Detection Performance
