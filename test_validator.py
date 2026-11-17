@@ -75,5 +75,17 @@ class ValidatorTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "No images found"):
                 validate_dataset(root, 2)
 
+
+    def test_invalid_class_count(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "images").mkdir()
+            (root / "labels").mkdir()
+            (root / "images" / "sample.jpg").write_bytes(b"test")
+            for count in (0, -1):
+                with self.subTest(class_count=count):
+                    with self.assertRaisesRegex(ValueError, "class_count must be positive"):
+                        validate_dataset(root, count)
+
 if __name__ == '__main__':
     unittest.main()
