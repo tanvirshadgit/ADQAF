@@ -139,7 +139,7 @@ ADQAF compares YOLO annotations against verified ground-truth labels.
 ### Features
 
 - Bounding-box IoU calculation
-- Class-aware, greedy one-to-one matching
+- Class-aware, maximum-cardinality bipartite one-to-one matching
 - TP, FP, FN, Precision, Recall and F1 Score
 - Dataset-level evaluation
 - Missing ground-truth safety checks
@@ -161,7 +161,7 @@ ADQAF compares YOLO annotations against verified ground-truth labels.
 
 ### Limitations
 
-- Greedy matching does not guarantee globally optimal matching
+- Maximum-cardinality matching maximizes valid one-to-one matches, but does not guarantee maximum total IoU
 - Ground-truth correctness is not independently verified
 - Image inventory completeness is not checked
 - Missing annotator files are treated as empty annotations

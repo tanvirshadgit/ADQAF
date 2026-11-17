@@ -39,14 +39,16 @@ def calculate_iou(box_a, box_b):
 
 
 def match_annotations(ground_truth, annotations, iou_threshold=0.5):
-    """Match (class_id, x, y, w, h) annotations one-to-one."""
+    """Maximum-cardinality class-aware one-to-one matching."""
 
     if not 0 < iou_threshold <= 1:
         raise ValueError("IoU threshold must be between 0 and 1")
 
-    candidates = []
+    adjacency = []
 
-    for gt_index, gt in enumerate(ground_truth):
+    for gt in ground_truth:
+        candidates = []
+
         for ann_index, ann in enumerate(annotations):
             if gt[0] != ann[0]:
                 continue
@@ -54,21 +56,35 @@ def match_annotations(ground_truth, annotations, iou_threshold=0.5):
             iou = calculate_iou(gt[1:], ann[1:])
 
             if iou >= iou_threshold:
-                candidates.append((iou, gt_index, ann_index))
+                candidates.append((iou, ann_index))
 
-    candidates.sort(reverse=True)
+        candidates.sort(key=lambda item: (-item[0], item[1]))
+        adjacency.append([index for _, index in candidates])
 
-    matched_gt = set()
-    matched_ann = set()
+    matched_annotation = {}
 
-    for iou, gt_index, ann_index in candidates:
-        if gt_index in matched_gt or ann_index in matched_ann:
-            continue
+    def augment(gt_index, visited):
+        for ann_index in adjacency[gt_index]:
+            if ann_index in visited:
+                continue
 
-        matched_gt.add(gt_index)
-        matched_ann.add(ann_index)
+            visited.add(ann_index)
 
-    tp = len(matched_gt)
+            if (
+                ann_index not in matched_annotation
+                or augment(matched_annotation[ann_index], visited)
+            ):
+                matched_annotation[ann_index] = gt_index
+                return True
+
+        return False
+
+    tp = 0
+
+    for gt_index in range(len(ground_truth)):
+        if augment(gt_index, set()):
+            tp += 1
+
     fp = len(annotations) - tp
     fn = len(ground_truth) - tp
 

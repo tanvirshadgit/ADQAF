@@ -332,3 +332,29 @@ class TestMissingGroundTruthSafety(unittest.TestCase):
                 ValueError, "Missing ground-truth files"
             ):
                 evaluate_annotation_directories(gt, ann)
+
+
+class TestMaximumCardinalityMatching(unittest.TestCase):
+
+    def test_greedy_matching_limitation(self):
+        from golden_set import match_annotations
+
+        ground_truth = [
+            (0, 0.50, 0.50, 0.40, 0.20),
+            (0, 0.65, 0.50, 0.40, 0.20),
+        ]
+
+        annotations = [
+            (0, 0.56, 0.50, 0.40, 0.20),
+            (0, 0.40, 0.50, 0.40, 0.20),
+        ]
+
+        result = match_annotations(
+            ground_truth,
+            annotations,
+            iou_threshold=0.5
+        )
+
+        self.assertEqual(result["tp"], 2)
+        self.assertEqual(result["fp"], 0)
+        self.assertEqual(result["fn"], 0)
