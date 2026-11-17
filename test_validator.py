@@ -66,5 +66,14 @@ class ValidatorTests(unittest.TestCase):
             report = validate_dataset(root, 2)
             self.assertEqual(report["issues_found"], 0)
 
+
+    def test_empty_dataset_raises_error(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "images").mkdir()
+            (root / "labels").mkdir()
+            with self.assertRaisesRegex(ValueError, "No images found"):
+                validate_dataset(root, 2)
+
 if __name__ == '__main__':
     unittest.main()

@@ -14,6 +14,8 @@ def validate_dataset(root: Path, class_count: int, missing_label_policy: str = '
     if class_count < 1:
         raise ValueError('class_count must be positive')
     images = sorted(p for p in images_dir.rglob('*') if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS)
+    if not images:
+        raise ValueError("No images found in dataset")
     issues = []
     checked = 0
     for image in images:
