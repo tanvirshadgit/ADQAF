@@ -14,9 +14,10 @@ ADQAF demonstrates annotation validation, dataset integrity checks, automated qu
 - Invalid class ID detection
 - Non-numeric and non-finite value detection
 - Invalid annotation format detection
-- Exact duplicate annotation detection
+- Exact numeric duplicate annotation detection (including equivalent decimal formatting)
 - Missing and empty label detection
-- Orphan label detection
+- Orphan label detection with cross-platform image extension handling
+- Empty dataset detection
 - Numerical boundary tolerance
 - Severity classification
 - Automated PASS / REVIEW / FAIL decisions
@@ -35,6 +36,21 @@ Python 3. No external Python packages required.
 ## Dataset Structure
 
 Images and labels must use matching relative paths under their respective directories.
+
+Example dataset layout:
+
+    datasets/
+      my_dataset/
+        images/
+          train/
+            image001.jpg
+            image002.jpg
+        labels/
+          train/
+            image001.txt
+            image002.txt
+
+Each image and its annotation file should share the same relative path and filename stem.
 
 YOLO annotation format:
 
@@ -72,7 +88,7 @@ severity classifications, and quality-gate decisions.
 
     python3 -m unittest discover -v
 
-Latest verified result: 11 tests passed.
+Latest verified result: 17 unit tests passed locally and in GitHub Actions CI.
 
 ## COCO128 Audit Results
 
@@ -99,10 +115,10 @@ Warnings: 2. Errors: 2.
 
 - No image-content integrity verification
 - No semantic annotation correctness evaluation
-- Exact duplicate detection only
+- Exact numeric duplicate detection only; IoU-based near-duplicate detection is not implemented
 - Missing labels may be intentional negative samples
 - Fixed dashboard input directory
-- No CI/CD integration yet
+- GitHub Actions runs automated unit tests; broader integration and deployment testing are not yet implemented
 - A passing quality gate does not guarantee dataset correctness
 
 ## Roadmap
@@ -112,7 +128,7 @@ Warnings: 2. Errors: 2.
 - Risk-based QA sampling
 - Image integrity checks
 - Configurable quality thresholds
-- CI/CD integration
+- Expand CI coverage with integration tests and automated dataset audits
 - Camera–LiDAR synchronization validation
 
 ## Related Research
