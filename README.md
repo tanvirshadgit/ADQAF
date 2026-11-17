@@ -195,3 +195,41 @@ Example (allow negative samples):
     python3 validator.py --dataset datasets/coco128 --classes 80 --output reports/negative_samples --missing-label-policy allow
 
 Use `allow` only when the dataset annotation policy permits missing label files. Empty label files are still reported.
+
+## Annotator Performance Scorecard
+
+ADQAF evaluates individual annotators against verified
+YOLO ground-truth annotations.
+
+### Features
+
+- Annotator ID and files evaluated
+- TP, FP, FN, Precision, Recall and F1 Score
+- Configurable PASS / REVIEW / FAIL thresholds
+- JSON report export
+
+### Default Quality Thresholds
+
+| F1 Score | Quality Status |
+|---|---|
+| 95% or higher | PASS |
+| 85% to below 95% | REVIEW |
+| Below 85% | FAIL |
+
+These thresholds are configurable project defaults,
+not universal industry standards.
+
+### Command-Line Usage
+
+Run the following command from the project directory:
+
+    python3 scorecard_cli.py --annotator-id annotator_001 --ground-truth datasets/golden_set_demo/ground_truth --annotations datasets/golden_set_demo/annotator --iou 0.5 --pass-threshold 0.95 --review-threshold 0.85 --output reports/scorecard/annotator_001.json
+
+The demo dataset must exist locally before running this example.
+
+### Limitations
+
+- Quality status is based on F1 Score only.
+- Ground-truth correctness is assumed.
+- Files evaluated counts annotation files, not verified images.
+- Thresholds should be calibrated to project requirements.
