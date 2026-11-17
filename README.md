@@ -208,7 +208,7 @@ ADQAF compares YOLO annotations against verified ground-truth labels.
 
 ### Run Evaluation
 
-    python3 golden_set_cli.py --ground-truth datasets/golden_set_demo/ground_truth --annotations datasets/golden_set_demo/annotator --iou 0.5 --output reports/golden_set/evaluation.json
+    python3 golden_set_cli.py --ground-truth examples/golden_set_demo/ground_truth --annotations examples/golden_set_demo/annotator --iou 0.5 --output reports/golden_set/evaluation.json
 
 ### Limitations
 
@@ -267,7 +267,7 @@ The FAIL status is the expected quality-gate classification for this demonstrati
 
 These results demonstrate metric calculation and threshold-based classification. They are not a benchmark of ADQAF accuracy or production performance.
 
-The demo dataset is local and is not included in the public repository.
+The synthetic demo annotation files are included in the public repository under examples/golden_set_demo/.
 
 ## Annotator Performance Scorecard
 
@@ -296,9 +296,9 @@ not universal industry standards.
 
 Run the following command from the project directory:
 
-    python3 scorecard_cli.py --annotator-id annotator_001 --ground-truth datasets/golden_set_demo/ground_truth --annotations datasets/golden_set_demo/annotator --iou 0.5 --pass-threshold 0.95 --review-threshold 0.85 --output reports/scorecard/annotator_001.json
+    python3 scorecard_cli.py --annotator-id annotator_001 --ground-truth examples/golden_set_demo/ground_truth --annotations examples/golden_set_demo/annotator --iou 0.5 --pass-threshold 0.95 --review-threshold 0.85 --output reports/scorecard/annotator_001.json
 
-The demo dataset must exist locally before running this example.
+The demo annotation files are included in the repository under examples/golden_set_demo/.
 
 ### Limitations
 
