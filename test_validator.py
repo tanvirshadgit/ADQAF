@@ -55,5 +55,16 @@ class ValidatorTests(unittest.TestCase):
             report = validate_dataset(root, 2)
             self.assertEqual(report["issue_counts"].get("DUPLICATE_BOX", 0), 1)
 
+
+    def test_uppercase_image_extension_not_orphan(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "images").mkdir()
+            (root / "labels").mkdir()
+            (root / "images" / "sample.JPG").write_bytes(b"test")
+            (root / "labels" / "sample.txt").write_text("0 0.5 0.5 0.2 0.2\n")
+            report = validate_dataset(root, 2)
+            self.assertEqual(report["issues_found"], 0)
+
 if __name__ == '__main__':
     unittest.main()

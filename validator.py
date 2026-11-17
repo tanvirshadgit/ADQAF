@@ -54,9 +54,10 @@ def validate_dataset(root: Path, class_count: int, missing_label_policy: str = '
             if signature in seen:
                 issues.append(dict(**base, code='DUPLICATE_BOX', detail='Exact duplicate annotation'))
             seen.add(signature)
+    image_stems = {image.relative_to(images_dir).with_suffix("").as_posix() for image in images}
     for label in sorted(labels_dir.rglob('*.txt')):
         relative = label.relative_to(labels_dir)
-        if not any((images_dir / relative.with_suffix(ext)).exists() for ext in IMAGE_EXTENSIONS):
+        if relative.with_suffix("").as_posix() not in image_stems:
             issues.append(dict(image=str(label.relative_to(root)), line='', code='ORPHAN_LABEL', detail='Label has no matching image'))
     counts = dict(sorted(Counter(i['code'] for i in issues).items()))
     return {'images_checked': checked, 'issues_found': len(issues), 'issue_counts': counts, 'issues': issues}
