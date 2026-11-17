@@ -44,5 +44,16 @@ class ValidatorTests(unittest.TestCase):
             self.assertEqual(report["issues_found"], 0)
             self.assertEqual(report["issue_counts"], {})
 
+
+    def test_numeric_equivalent_duplicate_boxes(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "images").mkdir()
+            (root / "labels").mkdir()
+            (root / "images" / "sample.jpg").write_bytes(b"test")
+            (root / "labels" / "sample.txt").write_text("0 0.5 0.5 0.2 0.2\n0 0.50 0.50 0.20 0.20\n")
+            report = validate_dataset(root, 2)
+            self.assertEqual(report["issue_counts"].get("DUPLICATE_BOX", 0), 1)
+
 if __name__ == '__main__':
     unittest.main()

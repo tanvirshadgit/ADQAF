@@ -50,7 +50,7 @@ def validate_dataset(root: Path, class_count: int, missing_label_policy: str = '
             x, y, w, h = vals
             if not all(0 <= v <= 1 for v in vals) or w <= 0 or h <= 0 or x-w/2 < -1e-6 or y-h/2 < -1e-6 or x+w/2 > 1+1e-6 or y+h/2 > 1+1e-6:
                 issues.append(dict(**base, code='INVALID_BOX', detail='Bounding box must have positive area and stay within image bounds'))
-            signature = tuple(fields)
+            signature = (int(cls_float), *vals)
             if signature in seen:
                 issues.append(dict(**base, code='DUPLICATE_BOX', detail='Exact duplicate annotation'))
             seen.add(signature)
