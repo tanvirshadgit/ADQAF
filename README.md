@@ -126,3 +126,20 @@ https://zenodo.org/records/24224386
 Tanvir Ahmed Khan
 
 Computer Vision | AI Data Quality Assurance | Data Operations
+
+## Missing Label Policy
+
+ADQAF supports configurable handling of images without annotation files.
+
+- `warn` (default): Reports `MISSING_LABEL` for review.
+- `allow`: Accepts missing annotation files as intentional negative samples.
+
+Example (default policy):
+
+    python3 validator.py --dataset datasets/coco128 --classes 80 --output reports/audit --missing-label-policy warn
+
+Example (allow negative samples):
+
+    python3 validator.py --dataset datasets/coco128 --classes 80 --output reports/negative_samples --missing-label-policy allow
+
+Use `allow` only when the dataset annotation policy permits missing label files. Empty label files are still reported.
