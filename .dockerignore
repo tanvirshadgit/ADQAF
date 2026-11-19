@@ -1,0 +1,13 @@
+.git
+.github
+.DS_Store
+__pycache__/
+*.pyc
+*.backup
+*.save
+*_backup.py
+.venv/
+venv/
+reports/
+.pytest_cache/
+.ruff_cache/

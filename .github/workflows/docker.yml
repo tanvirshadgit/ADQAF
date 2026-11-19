@@ -1,0 +1,24 @@
+
+name: ADQAF Docker CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t adqaf:ci .
+
+      - name: Run unit tests inside Docker
+        run: |
+          docker run --rm \
+            --entrypoint python \
+            adqaf:ci \
+            -m unittest discover -s /app -p "test_*.py"

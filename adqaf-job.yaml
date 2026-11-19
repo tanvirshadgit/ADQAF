@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: adqaf-validation
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: adqaf
+          image: adqaf:dev
+          imagePullPolicy: Never
+          args:
+            - --dataset
+            - /data
+            - --classes
+            - "1"
+            - --output
+            - /output
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: demo-data
+              mountPath: /data
+              readOnly: true
+            - name: reports
+              mountPath: /output
+      volumes:
+        - name: demo-data
+          configMap:
+            name: adqaf-demo-data
+            items:
+              - key: image001.jpg
+                path: images/image001.jpg
+              - key: image001.txt
+                path: labels/image001.txt
+        - name: reports
+          emptyDir: {}

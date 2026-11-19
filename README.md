@@ -319,3 +319,127 @@ The demo annotation files are included in the repository under examples/golden_s
 - Thresholds should be calibrated to project requirements.
 
 **Engineering Case Study:** [Read the full case study](CASE_STUDY.md)
+
+## Docker and Kubernetes
+
+ADQAF supports containerized execution with Docker and batch dataset validation using Kubernetes Jobs.
+
+### Docker Build
+
+Build the ADQAF Docker image:
+
+```bash
+docker build -t adqaf:dev .
+```
+
+### Run Automated Tests in Docker
+
+```bash
+docker run --rm --entrypoint python adqaf:dev \
+  -m unittest discover -s /app -p "test_*.py"
+```
+
+**Verified result:** All 54 unit tests passed inside Docker.
+
+### Dataset Validation with Docker
+
+Prepare a YOLO-format dataset containing `images/` and `labels/` directories.
+
+```bash
+mkdir -p reports
+
+docker run --rm \
+  --user "$(id -u):$(id -g)" \
+  -v "$(pwd)/dataset:/data:ro" \
+  -v "$(pwd)/reports:/output" \
+  adqaf:dev \
+  --dataset /data \
+  --classes 1 \
+  --output /output
+```
+
+Replace `dataset` with your dataset path and adjust `--classes` according to the dataset.
+
+Generated reports:
+
+- `quality_report.json`
+- `issues.csv`
+
+### Kubernetes Deployment
+
+ADQAF includes `adqaf-job.yaml` for running dataset validation as a Kubernetes batch Job.
+
+**Prerequisites:**
+
+- Docker and a running Docker daemon
+- kubectl
+- kind
+- Locally built `adqaf:dev` image
+
+Create a local Kubernetes cluster:
+
+```bash
+kind create cluster --name adqaf
+```
+
+Load the Docker image:
+
+```bash
+kind load docker-image adqaf:dev --name adqaf
+```
+
+Create a ConfigMap containing a small demonstration dataset:
+
+```bash
+kubectl create configmap adqaf-demo-data \
+  --from-file=image001.jpg=./demo/images/image001.jpg \
+  --from-file=image001.txt=./demo/labels/image001.txt
+```
+
+The `demo/` paths above are examples. Supply your own test files at those paths before running the command.
+
+Deploy the Kubernetes Job:
+
+```bash
+kubectl apply -f adqaf-job.yaml
+```
+
+Check execution status:
+
+```bash
+kubectl get jobs
+```
+
+View validation logs:
+
+```bash
+kubectl logs job/adqaf-validation
+```
+
+### Verified Local Execution
+
+The following results were verified on a local Docker and kind Kubernetes environment:
+
+| Component | Result |
+|---|---|
+| Docker image build | Passed |
+| Docker unit tests | 54/54 passed |
+| Docker dataset validation | Passed |
+| Kubernetes cluster | Ready |
+| Kubernetes Job | Complete (1/1) |
+| Kubernetes validation | 1 sample image, 0 issues |
+
+Example Kubernetes output:
+
+```text
+Checked 1 images; found 0 issues
+Issue counts: {}
+Reports saved to /output
+```
+
+### Limitations
+
+- This implementation demonstrates local Docker and Kubernetes execution, not a production deployment.
+- The demonstration dataset uses a placeholder image file and verifies annotation structure rather than image decoding.
+- Kubernetes reports currently use an ephemeral `emptyDir` volume.
+- Persistent Kubernetes report storage, distributed processing, and production-scale performance testing remain future improvements.
